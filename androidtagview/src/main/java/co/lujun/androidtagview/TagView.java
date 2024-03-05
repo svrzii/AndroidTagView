@@ -356,6 +356,7 @@ public class TagView extends View {
 
     private void drawImage(Canvas canvas){
         if (isEnableImage()) {
+            // Load your image as a Bitmap
             Bitmap scaledImageBitmap = Bitmap.createScaledBitmap(mBitmapImage, Math.round(getHeight() - mBorderWidth), Math.round(getHeight() - mBorderWidth), false);
 
             Paint paint = new Paint();
@@ -370,10 +371,8 @@ public class TagView extends View {
             float left = centerX - scaledImageBitmap.getWidth() / 2.0f;
             float top = centerY - scaledImageBitmap.getHeight() / 2.0f;
 
-            // Create the rectangle to draw the image
-            RectF rect = new RectF(left, top, left + scaledImageBitmap.getWidth(), top + scaledImageBitmap.getHeight());
-
-            canvas.drawRoundRect(rect, rect.height()/2, rect.height()/2, paint);
+            // Draw the Bitmap on the Canvas
+            canvas.drawBitmap(scaledImageBitmap, left, top, null);
         }
     }
 
