@@ -361,7 +361,18 @@ public class TagView extends View {
             Paint paint = new Paint();
             paint.setAntiAlias(true);
             paint.setShader(new BitmapShader(scaledImageBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));
-            RectF rect = new RectF(mBorderWidth, mBorderWidth, getHeight() - mBorderWidth, getHeight() - mBorderWidth);
+
+            // Calculate the center of the canvas
+            float centerX = getWidth() / 2.0f;
+            float centerY = getHeight() / 2.0f;
+
+            // Calculate the top left corner of the image so that it's centered on the canvas
+            float left = centerX - scaledImageBitmap.getWidth() / 2.0f;
+            float top = centerY - scaledImageBitmap.getHeight() / 2.0f;
+
+            // Create the rectangle to draw the image
+            RectF rect = new RectF(left, top, left + scaledImageBitmap.getWidth(), top + scaledImageBitmap.getHeight());
+
             canvas.drawRoundRect(rect, rect.height()/2, rect.height()/2, paint);
         }
     }
