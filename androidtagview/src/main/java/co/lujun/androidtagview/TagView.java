@@ -357,7 +357,7 @@ public class TagView extends View {
     private void drawImage(Canvas canvas){
         if (isEnableImage()) {
             // Load your image as a Bitmap
-            Bitmap scaledImageBitmap = Bitmap.createScaledBitmap(mBitmapImage, Math.round(getHeight() - mVerticalPadding), Math.round(getHeight() - mHorizontalPadding), false);
+            Bitmap scaledImageBitmap = Bitmap.createScaledBitmap(mBitmapImage, Math.round(getHeight() - mVerticalPadding - mBorderWidth), Math.round(getHeight() - mVerticalPadding - mBorderWidth), false);
 
             Paint paint = new Paint();
             paint.setAntiAlias(true);
