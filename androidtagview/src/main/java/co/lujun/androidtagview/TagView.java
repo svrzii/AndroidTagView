@@ -30,6 +30,7 @@ import android.graphics.Region;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;
@@ -82,6 +83,9 @@ public class TagView extends View {
 
     /** The max length for this tag view*/
     private int mTagMaxLength;
+
+    /** Whether the text fills the available width instead of the max length*/
+    private boolean mTagFitWidth;
 
     /** OnTagClickListener for click action*/
     private OnTagClickListener mOnTagClickListener;
@@ -184,7 +188,7 @@ public class TagView extends View {
 
     private void onDealText(){
         if(!TextUtils.isEmpty(mOriginText)) {
-            mAbstractText = mOriginText.length() <= mTagMaxLength ? mOriginText
+            mAbstractText = mTagFitWidth || mOriginText.length() <= mTagMaxLength ? mOriginText
                     : mOriginText.substring(0, mTagMaxLength - 3) + "...";
         }else {
             mAbstractText = "";
@@ -193,6 +197,10 @@ public class TagView extends View {
         mPaint.setTextSize(mTextSize);
         final Paint.FontMetrics fontMetrics = mPaint.getFontMetrics();
         fontH = fontMetrics.descent - fontMetrics.ascent;
+        onMeasureText();
+    }
+
+    private void onMeasureText(){
         if (mTextDirection == View.TEXT_DIRECTION_RTL){
             fontW = 0;
             for (char c : mAbstractText.toCharArray()) {
@@ -208,7 +216,13 @@ public class TagView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int height = mVerticalPadding * 2 + (int) fontH;
-        int width = mHorizontalPadding * 2 + (int) fontW + (isEnableCross() ? getCrossWidth(height) : 0) + (isEnableImage() ? height : 0);
+        int chrome = mHorizontalPadding * 2 + (isEnableCross() ? getCrossWidth(height) : 0) + (isEnableImage() ? height : 0);
+        if (mTagFitWidth && MeasureSpec.getMode(widthMeasureSpec) != MeasureSpec.UNSPECIFIED) {
+            mAbstractText = TextUtils.ellipsize(mOriginText, new TextPaint(mPaint),
+                    MeasureSpec.getSize(widthMeasureSpec) - chrome, TextUtils.TruncateAt.MIDDLE).toString();
+            onMeasureText();
+        }
+        int width = chrome + (int) fontW;
         setMeasuredDimension(width, height);
     }
 
@@ -477,6 +491,11 @@ public class TagView extends View {
 
     public void setTagMaxLength(int maxLength){
         this.mTagMaxLength = maxLength;
+        onDealText();
+    }
+
+    public void setTagFitWidth(boolean fitWidth){
+        this.mTagFitWidth = fitWidth;
         onDealText();
     }
 

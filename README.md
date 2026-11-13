@@ -145,6 +145,10 @@ mTagContainerLayout.setOnTagClickListener(new TagView.OnTagClickListener() {
 ```java
 mTagContainerLayout.setTagMaxLength(int max);
 ```
+* Use ```setTagFitWidth(boolean fitWidth)``` to show the whole text when it fits the available width, else shorten it in the middle, instead of cutting it at the max length.
+```java
+mTagContainerLayout.setTagFitWidth(true);
+```
 * Use ```getTagText(int position)``` to get TagView text at the specified location.
 ```java
 String text = mTagContainerLayout.getTagText(int position);

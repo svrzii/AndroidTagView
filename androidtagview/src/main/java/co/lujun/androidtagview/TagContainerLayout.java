@@ -107,6 +107,11 @@ public class TagContainerLayout extends ViewGroup {
     private int mTagMaxLength = 23;
 
     /**
+     * Whether TagView text fills the available width instead of the max length(default false)
+     */
+    private boolean mTagFitWidth = false;
+
+    /**
      * TagView Border width(default 0.5dp)
      */
     private float mTagBorderWidth = 0.5f;
@@ -579,6 +584,7 @@ public class TagContainerLayout extends ViewGroup {
         tagView.setTagTextColor(colors[2]);
         tagView.setTagSelectedBackgroundColor(colors[3]);
         tagView.setTagMaxLength(mTagMaxLength);
+        tagView.setTagFitWidth(mTagFitWidth);
         tagView.setTextDirection(mTagTextDirection);
         tagView.setTypeface(mTagTypeface);
         tagView.setBorderWidth(mTagBorderWidth);
@@ -1179,6 +1185,25 @@ public class TagContainerLayout extends ViewGroup {
      */
     public int getTagMaxLength() {
         return mTagMaxLength;
+    }
+
+    /**
+     * Show the whole TagView text when it fits the available width, else shorten it in the middle,
+     * instead of cutting it at the max length.
+     *
+     * @param fitWidth
+     */
+    public void setTagFitWidth(boolean fitWidth) {
+        mTagFitWidth = fitWidth;
+    }
+
+    /**
+     * Get whether TagView text fits the available width.
+     *
+     * @return
+     */
+    public boolean getTagFitWidth() {
+        return mTagFitWidth;
     }
 
     /**
