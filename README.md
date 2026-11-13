@@ -81,7 +81,7 @@ Now, you have successfully created some TagViews. The following will show some m
 | tag_ripple_alpha | integer | The ripple effect color alpha(the value may between 0 - 255, default 128)
 | tag_ripple_duration | integer | The ripple effect duration(In milliseconds, default 1000ms)
 | tag_enable_cross | boolean | Enable draw cross icon(default false)
-| tag_cross_width | dimension | The cross area width(your cross click area, default equal to the TagView's height)
+| tag_cross_width | dimension | The cross area width(when set, the cross is drawn at its start and the rest is space after it; the click area is at least the TagView's height, default equal to the TagView's height)
 | tag_cross_color | color | The cross icon color(default Color.BLACK)
 | tag_cross_line_width | dimension | The cross line width(default 1dp)
 | tag_cross_area_padding | dimension | The padding of the cross area(default 10dp)

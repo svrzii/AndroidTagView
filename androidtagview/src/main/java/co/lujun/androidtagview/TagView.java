@@ -208,9 +208,12 @@ public class TagView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int height = mVerticalPadding * 2 + (int) fontH;
-        int width = mHorizontalPadding * 2 + (int) fontW + (isEnableCross() ? height : 0) + (isEnableImage() ? height : 0);
-        mCrossAreaWidth = Math.min(Math.max(mCrossAreaWidth, height), width);
+        int width = mHorizontalPadding * 2 + (int) fontW + (isEnableCross() ? getCrossWidth(height) : 0) + (isEnableImage() ? height : 0);
         setMeasuredDimension(width, height);
+    }
+
+    private int getCrossWidth(int height) {
+        return mCrossAreaWidth > 0 ? (int) mCrossAreaWidth : height;
     }
 
     @Override
@@ -241,7 +244,7 @@ public class TagView extends View {
 
         if (mTextDirection == View.TEXT_DIRECTION_RTL) {
             if (mTagSupportLettersRTL){
-                float tmpX = (isEnableCross() ? getWidth() + getHeight() : getWidth()) / 2
+                float tmpX = (isEnableCross() ? getWidth() + getCrossWidth(getHeight()) : getWidth()) / 2
                         + fontW / 2;
                 for (char c : mAbstractText.toCharArray()) {
                     String sc = String.valueOf(c);
@@ -255,7 +258,7 @@ public class TagView extends View {
             }
         } else {
             canvas.drawText(mAbstractText,
-                    (isEnableCross() ? getWidth() - getHeight() : getWidth()) / 2 - fontW / 2 + (isEnableImage() ? getHeight() / 2 : 0),
+                    (isEnableCross() ? getWidth() - getCrossWidth(getHeight()) : getWidth()) / 2 - fontW / 2 + (isEnableImage() ? getHeight() / 2 : 0),
                     getHeight() / 2 + fontH / 2 - bdDistance, mPaint);
         }
 
@@ -348,10 +351,11 @@ public class TagView extends View {
     }
 
     private boolean isClickCrossArea(MotionEvent event){
+        float crossAreaWidth = Math.min(Math.max(mCrossAreaWidth, getHeight()), getWidth());
         if (mTextDirection == View.TEXT_DIRECTION_RTL){
-            return event.getX() <= mCrossAreaWidth;
+            return event.getX() <= crossAreaWidth;
         }
-        return event.getX() >= getWidth() - mCrossAreaWidth;
+        return event.getX() >= getWidth() - crossAreaWidth;
     }
 
     private void drawImage(Canvas canvas){
@@ -380,21 +384,22 @@ public class TagView extends View {
         if (isEnableCross()){
             mCrossAreaPadding = mCrossAreaPadding > getHeight() / 2 ? getHeight() / 2 :
                     mCrossAreaPadding;
+            // A set cross area width puts the cross at its start, the rest of the area is space after it
+            float crossSize = getHeight() - mCrossAreaPadding * 2;
+            float crossLeft = mTextDirection == View.TEXT_DIRECTION_RTL ?
+                    (mCrossAreaWidth > 0 ? mCrossAreaWidth - crossSize : mCrossAreaPadding) :
+                    (mCrossAreaWidth > 0 ? getWidth() - mCrossAreaWidth : getWidth() - getHeight() + mCrossAreaPadding);
             int ltX, ltY, rbX, rbY, lbX, lbY, rtX, rtY;
-            ltX = mTextDirection == View.TEXT_DIRECTION_RTL ? (int)(mCrossAreaPadding) :
-                    (int)(getWidth() - getHeight() + mCrossAreaPadding);
+            ltX = (int) crossLeft;
             ltY = mTextDirection == View.TEXT_DIRECTION_RTL ? (int)(mCrossAreaPadding) :
                     (int)(mCrossAreaPadding);
-            lbX = mTextDirection == View.TEXT_DIRECTION_RTL ? (int)(mCrossAreaPadding) :
-                    (int)(getWidth() - getHeight() + mCrossAreaPadding);
+            lbX = (int) crossLeft;
             lbY = mTextDirection == View.TEXT_DIRECTION_RTL ?
                     (int)(getHeight() - mCrossAreaPadding) : (int)(getHeight() - mCrossAreaPadding);
-            rtX = mTextDirection == View.TEXT_DIRECTION_RTL ?
-                    (int)(getHeight() - mCrossAreaPadding) : (int)(getWidth() - mCrossAreaPadding);
+            rtX = (int)(crossLeft + crossSize);
             rtY = mTextDirection == View.TEXT_DIRECTION_RTL ? (int)(mCrossAreaPadding) :
                     (int)(mCrossAreaPadding);
-            rbX = mTextDirection == View.TEXT_DIRECTION_RTL ?
-                    (int)(getHeight() - mCrossAreaPadding) : (int)(getWidth() - mCrossAreaPadding);
+            rbX = (int)(crossLeft + crossSize);
             rbY = mTextDirection == View.TEXT_DIRECTION_RTL ?
                     (int)(getHeight() - mCrossAreaPadding) : (int)(getHeight() - mCrossAreaPadding);
 
